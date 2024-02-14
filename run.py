@@ -33,13 +33,13 @@ data_list = get_data(config)
 siam_lrs= [0.0001, 0.001, 0.01]
 
 
-for run in range(len(siam_lrs)):
+for i in range(len(siam_lrs)):
     # RUN EXPERIMENT
-    wandb.init(
+    run = wandb.init(
     project="MvSCN",
-    name=f"MvSCN-{run}",
+    name=f"MvSCN-{i}",
     )
-    
-    print(f"MvSCN-{run}")
+
+    print(f"MvSCN-{i}")
     # print(get_run_name("MvSCN", run))
-    x_final_list, scores = run_net(data_list, config, run, siam_lrs)
+    x_final_list, scores = run_net(data_list, config, i, siam_lrs, run)
