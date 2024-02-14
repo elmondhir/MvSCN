@@ -148,7 +148,7 @@ class MvSCN:
         K.get_session().run(tf.variables_initializer(self.net.trainable_weights))
         
     def train(self, x_train, lr, drop, patience, num_epochs, x_test=None, y_test=None):
-        with tf.device('/GPU:0'):
+        with tf.device('/physical_device:GPU:0'):
             # create handler for early stopping and learning rate scheduling
             self.lh = LearningHandler(
                     lr=lr,
@@ -181,7 +181,7 @@ class MvSCN:
             return losses[:i]
 
     def predict(self, x):
-        with tf.device('/GPU:0'):
+        with tf.device('/physical_device:GPU:0'):
             return train.predict(
                         self.output_shape,
                         x_unlabeled=x,
