@@ -44,11 +44,11 @@ for run in range(len(siam_lrs)):
     wandb.init(
     project="MvSCN",
     name=get_run_name("MvSCN", run),
-    # (optional) set entity to specify your username or team name
-    # entity="my_team",
     
     config={
         "siam_lr": siam_lrs[run],
     },
     )
+
+    print(get_run_name("MvSCN", run))
     x_final_list, scores = run_net(data_list, config, run, siam_lrs)
