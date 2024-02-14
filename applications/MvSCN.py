@@ -29,7 +29,12 @@ def run_net(data_list, config, save=True):
         config={
             "siam_lr": siam_lrs[run],
         },
-    )
+        )
+            # Add WandbMetricsLogger to log metrics and WandbModelCheckpoint to log model checkpoints
+        wandb_callbacks = [
+            WandbMetricsLogger(),
+            WandbModelCheckpoint(filepath="my_model_{epoch:02d}"),
+        ]
         # network input shapes stored as view-list
         MvSCN_input_shape = []
         SiameseNet_input_shape = []
@@ -80,7 +85,8 @@ def run_net(data_list, config, save=True):
                     patience=config['siam_patience'],
                     num_epochs=config['siam_epoch'], 
                     batch_size=config['siam_batch_size'], 
-                    pre_train=config['siam_pre_train'])
+                    pre_train=config['siam_pre_train'],
+                    wb_callback=wandb_callbacks)
 
             SiameseNet_input_shape.append(siamese_net)
 
