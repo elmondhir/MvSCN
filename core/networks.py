@@ -41,7 +41,7 @@ class SiameseNet:
         self.net.compile(loss=costs.get_contrastive_loss(m_neg=1, m_pos=0.05), optimizer='rmsprop')
 
     def train(self, pairs_train, dist_train,
-            lr, drop, patience, num_epochs, batch_size, pre_train=False):
+            lr, drop, patience, num_epochs, batch_size, pre_train=False, wb_callback=None):
         # create handler for early stopping and learning rate scheduling
         self.lh = LearningHandler(
                 lr=lr,
@@ -63,7 +63,7 @@ class SiameseNet:
             return 0
         else:
             # train the network
-            hist = self.net.fit_generator(train_gen_, epochs=num_epochs, validation_data=validation_data, steps_per_epoch=steps_per_epoch, callbacks=[self.lh])
+            hist = self.net.fit_generator(train_gen_, epochs=num_epochs, validation_data=validation_data, steps_per_epoch=steps_per_epoch, callbacks=[self.lh, wb_callback])
             self.net.save_weights('./pretrain/siamese/'+self.name+'_siamese_weight'+'.h5')
             return hist
 

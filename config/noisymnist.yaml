@@ -20,7 +20,7 @@ arch:                             # Network architecher for SiameseNet and Spect
 # config for siameseNet
 siam_batch_size: 128              # minibatch size for siamese net
 siam_drop: 0.1                    # learning rate scheduler decay for siamese net
-siam_epoch: 400                   # number of training epochs for siamese net
+siam_epoch: 10                   # number of training epochs for siamese net
 siam_k: 3                         # threshold where, for all k <= siam_k closest neighbors to x_i, (x_i, k) is considered
                                   # a 'positive' pair by siamese net
 siam_lr: 0.0001                   # initial learning rate for siamese net
