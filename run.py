@@ -32,23 +32,14 @@ data_list = get_data(config)
 
 siam_lrs= [0.0001, 0.001, 0.01]
 
-def get_run_name(project_name, index):
-  """
-  Returns a personalized run name combining the project name and an index.
-  """
-  return f"{project_name}-{index}"
-
 
 for run in range(len(siam_lrs)):
     # RUN EXPERIMENT
     wandb.init(
     project="MvSCN",
-    name=get_run_name("MvSCN", run),
-    
-    config={
-        "siam_lr": siam_lrs[run],
-    },
+    name=f"MvSCN-{run}",
     )
-
-    print(get_run_name("MvSCN", run))
+    
+    print(f"MvSCN-{run}")
+    # print(get_run_name("MvSCN", run))
     x_final_list, scores = run_net(data_list, config, run, siam_lrs)
