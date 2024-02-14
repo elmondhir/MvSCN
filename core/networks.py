@@ -14,7 +14,7 @@ from . import train
 from . import costs
 from .layer import stack_layers
 from .util import LearningHandler, make_layer_list, train_gen, get_scale
-
+import wandb
 
 class SiameseNet:
     def __init__(self, name, inputs, arch, siam_reg):
@@ -41,7 +41,7 @@ class SiameseNet:
         self.net.compile(loss=costs.get_contrastive_loss(m_neg=1, m_pos=0.05), optimizer='rmsprop')
 
     def train(self, pairs_train, dist_train,
-            lr, drop, patience, num_epochs, batch_size, pre_train=False, wb_callback=None):
+            lr, drop, patience, num_epochs, batch_size, pre_train=False):
         # create handler for early stopping and learning rate scheduling
         self.lh = LearningHandler(
                 lr=lr,
@@ -63,7 +63,7 @@ class SiameseNet:
             return 0
         else:
             # train the network
-            hist = self.net.fit_generator(train_gen_, epochs=num_epochs, validation_data=validation_data, steps_per_epoch=steps_per_epoch, callbacks=[self.lh, wb_callback])
+            hist = self.net.fit_generator(train_gen_, epochs=num_epochs, validation_data=validation_data, steps_per_epoch=steps_per_epoch, callbacks=[self.lh])
             self.net.save_weights('./pretrain/siamese/'+self.name+'_siamese_weight'+'.h5')
             return hist
 
@@ -170,6 +170,11 @@ class MvSCN:
                     inputs=self.input_shape,
                     batch_sizes=self.batch_sizes,
                     batches_per_epoch=100)[0]
+            
+             # Logging with W&B
+            wandb.log({"train_loss": losses[i],
+            })
+
 
             # do early stopping if necessary
             if self.lh.on_epoch_end(i, losses[i]):
