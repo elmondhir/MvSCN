@@ -148,41 +148,43 @@ class MvSCN:
         K.get_session().run(tf.variables_initializer(self.net.trainable_weights))
         
     def train(self, x_train, lr, drop, patience, num_epochs, x_test=None, y_test=None):
-        # create handler for early stopping and learning rate scheduling
-        self.lh = LearningHandler(
-                lr=lr,
-                drop=drop,
-                lr_tensor=self.learning_rate,
-                patience=patience)
+        with tf.device('/GPU:0'):
+            # create handler for early stopping and learning rate scheduling
+            self.lh = LearningHandler(
+                    lr=lr,
+                    drop=drop,
+                    lr_tensor=self.learning_rate,
+                    patience=patience)
 
-        losses = np.empty((num_epochs,))
-        val_losses = np.empty((num_epochs,))
+            losses = np.empty((num_epochs,))
+            val_losses = np.empty((num_epochs,))
 
-        # begin spectralnet training loop
-        self.lh.on_train_begin()
-        for i in range(num_epochs):
-            # train spectralnet
-            losses[i] = train.train_step(
-                    return_var=[self.loss],
-                    updates=self.net.updates + [self.train_step],
-                    x_unlabeled=x_train,
-                    inputs=self.input_shape,
-                    batch_sizes=self.batch_sizes,
-                    batches_per_epoch=100)[0]
+            # begin spectralnet training loop
+            self.lh.on_train_begin()
+            for i in range(num_epochs):
+                # train spectralnet
+                losses[i] = train.train_step(
+                        return_var=[self.loss],
+                        updates=self.net.updates + [self.train_step],
+                        x_unlabeled=x_train,
+                        inputs=self.input_shape,
+                        batch_sizes=self.batch_sizes,
+                        batches_per_epoch=100)[0]
 
-            # do early stopping if necessary
-            if self.lh.on_epoch_end(i, losses[i]):
-                print('STOPPING EARLY')
-                return losses[:i]
-            # print training status
-            print("Epoch: {}, loss={:2f}".format(i, losses[i]))
+                # do early stopping if necessary
+                if self.lh.on_epoch_end(i, losses[i]):
+                    print('STOPPING EARLY')
+                    return losses[:i]
+                # print training status
+                print("Epoch: {}, loss={:2f}".format(i, losses[i]))
 
-        return losses[:i]
+            return losses[:i]
 
     def predict(self, x):
-        return train.predict(
-                    self.output_shape,
-                    x_unlabeled=x,
-                    inputs=self.input_shape,
-                    batch_sizes=self.batch_sizes,
-                    view_size=self.view_size)
+        with tf.device('/GPU:0'):
+            return train.predict(
+                        self.output_shape,
+                        x_unlabeled=x,
+                        inputs=self.input_shape,
+                        batch_sizes=self.batch_sizes,
+                        view_size=self.view_size)
