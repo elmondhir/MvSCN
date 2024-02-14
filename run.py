@@ -26,5 +26,9 @@ config['siam_pre_train'] = True
 # LOAD DATA
 data_list = get_data(config)
 
-# RUN EXPERIMENT
-x_final_list, scores = run_net(data_list, config)
+
+siam_lrs= [0.0001, 0.001, 0.01]
+
+for run in range(len(siam_lrs)):
+    # RUN EXPERIMENT
+    x_final_list, scores = run_net(data_list, config, run, siam_lrs)
