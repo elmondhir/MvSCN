@@ -5,31 +5,9 @@ from keras.layers import Input
 
 from . import Clustering
 from core import networks
-from wandb.keras import WandbMetricsLogger, WandbModelCheckpoint
-import wandb
-
-wandb.login(key="f4ee04bfcae66c9215ab791dd58659c92ff3d87f")
-
-def get_run_name(project_name, index):
-  """
-  Returns a personalized run name combining the project name and an index.
-  """
-  return f"{project_name}-{index}"
-
 
 
 def run_net(data_list, config, run, siam_lrs, save=True):
-    
-    wandb.init(
-    project="MvSCN",
-    name=get_run_name("MvSCN", run),
-    # (optional) set entity to specify your username or team name
-    # entity="my_team",
-    
-    config={
-        "siam_lr": siam_lrs[run],
-    },
-    )
         # Add WandbMetricsLogger to log metrics and WandbModelCheckpoint to log model checkpoints
     # wandb_callbacks = [
     #     WandbMetricsLogger(),

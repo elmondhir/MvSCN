@@ -12,6 +12,9 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 from applications.MvSCN import run_net
 from core.Config import load_config
 from core.data import get_data
+import wandb
+
+wandb.login(key="f4ee04bfcae66c9215ab791dd58659c92ff3d87f")
 
 
 # load config for NoisyMNIST 
@@ -29,6 +32,23 @@ data_list = get_data(config)
 
 siam_lrs= [0.0001, 0.001, 0.01]
 
+def get_run_name(project_name, index):
+  """
+  Returns a personalized run name combining the project name and an index.
+  """
+  return f"{project_name}-{index}"
+
+
 for run in range(len(siam_lrs)):
     # RUN EXPERIMENT
+    wandb.init(
+    project="MvSCN",
+    name=get_run_name("MvSCN", run),
+    # (optional) set entity to specify your username or team name
+    # entity="my_team",
+    
+    config={
+        "siam_lr": siam_lrs[run],
+    },
+    )
     x_final_list, scores = run_net(data_list, config, run, siam_lrs)
