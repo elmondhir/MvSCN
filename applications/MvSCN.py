@@ -88,10 +88,13 @@ def run_net(data_list, config, save=True):
         # config = wandb.config
         
     mvscn.train(x_train=x_train_list,
+        x_test_list= x_test_list,## addied the test set to predict
+        y_test_for_epoch= y_test, ## addied the test set y to calculate at each epoch
         lr=config["spectral_lr"], 
         drop=config['spectral_drop'], 
         patience=config['spectral_patience'],
-        num_epochs=config['spectral_epoch'])
+        num_epochs=config['spectral_epoch'],
+        )
 
     print("Training finished ")
 

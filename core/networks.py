@@ -14,6 +14,7 @@ from . import train
 from . import costs
 from .layer import stack_layers
 from .util import LearningHandler, make_layer_list, train_gen, get_scale
+from applications.Clustering import Clustering
 import wandb
 
 class SiameseNet:
@@ -147,7 +148,7 @@ class MvSCN:
         # initialize spectralnet variables
         K.get_session().run(tf.variables_initializer(self.net.trainable_weights))
         
-    def train(self, x_train, lr, drop, patience, num_epochs, x_test=None, y_test=None):
+    def train(self, x_train, x_test_list, y_test_for_epoch, lr, drop, patience, num_epochs, x_test=None, y_test=None):
         # with tf.device('/physical_device:GPU:0'):
         # create handler for early stopping and learning rate scheduling
         self.lh = LearningHandler(
@@ -171,10 +172,15 @@ class MvSCN:
                     batch_sizes=self.batch_sizes,
                     batches_per_epoch=100)[0]
             
+            
              # Logging with W&B
             wandb.log({"loss": losses[i],
             })
 
+            ## caling the pred function after calculating the loss
+
+            x_test_final_list = self.predict(x_test_list)
+            y_preds, scores= Clustering(x_test_final_list, y_test_for_epoch)
 
             # do early stopping if necessary
             if self.lh.on_epoch_end(i, losses[i]):
