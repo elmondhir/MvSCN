@@ -35,8 +35,6 @@ def get_data(params):
         if params['use_code_space']:
             all_data = [x_train, x_test]
             for j, d in enumerate(all_data):
-                print(params['dset'])
-                print(view_name)
                 all_data[j] = embed_data(d, dset=params['dset'] , view_name=view_name)
             x_train, x_test = all_data
 

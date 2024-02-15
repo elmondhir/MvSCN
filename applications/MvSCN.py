@@ -28,10 +28,8 @@ def run_net():
         data_list = get_data(configs)
         
         # wandb params
-        siam_lr = wandb.config.siam_lrs
         num_epochs = wandb.config.epochs
         lamb = wandb.config.lamb
-        siam_k = wandb.config.siam_k
 
         # network input shapes stored as view-list
         MvSCN_input_shape = []
@@ -77,7 +75,8 @@ def run_net():
             
             history = siamese_net.train(pairs_train=pairs_train,
                     dist_train=dist_train,
-                    lr=siam_lr, #from wandb config
+                    lr=configs['siam_lr'], 
+                    #lr= siam_lr, #from wandb config
                     drop=configs['siam_drop'], 
                     patience=configs['siam_patience'],
                     num_epochs=num_epochs, # from wandb config

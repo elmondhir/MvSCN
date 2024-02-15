@@ -24,7 +24,6 @@ sweep_config = {
     "metric": {'goal': 'minimize', 'name': 'loss'},
     'parameters': {
                 'epochs': {'values': [50, 100, 150]},
-                'siam_lrs':{'values': [0.0001, 0.001, 0.01]},
                 'siam_k':{'values': [2,3,4,5,6,7,8,9]},
                 'lamb':{'values': [0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001 , 0.0005, 0.00001]},
                 }
