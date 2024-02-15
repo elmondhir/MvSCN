@@ -30,16 +30,19 @@ config['siam_pre_train'] = True
 data_list = get_data(config)
 
 
-siam_lrs= [0.0001, 0.001, 0.01]
+# siam_lrs= [0.0001, 0.001, 0.01]
 
 
-for i in range(len(siam_lrs)):
-    # RUN EXPERIMENT
-    run = wandb.init(
-    project="MvSCN",
-    name=f"MvSCN-{i}",
-    )
 
-    print(f"MvSCN-{i}")
-    # print(get_run_name("MvSCN", run))
-    x_final_list, scores = run_net(data_list, config, i, siam_lrs, run)
+# RUN EXPERIMENT
+wandb.init(
+project="MvSCN",
+name=f"MvSCN-best",
+)
+
+print(f"MvSCN-best")
+# print(get_run_name("MvSCN", run))
+x_final_list, scores = run_net(data_list, config)
+
+wandb.finish()
+

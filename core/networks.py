@@ -147,7 +147,7 @@ class MvSCN:
         # initialize spectralnet variables
         K.get_session().run(tf.variables_initializer(self.net.trainable_weights))
         
-    def train(self, x_train, lr, drop, patience, num_epochs, run_var, x_test=None, y_test=None):
+    def train(self, x_train, lr, drop, patience, num_epochs, x_test=None, y_test=None):
         # with tf.device('/physical_device:GPU:0'):
         # create handler for early stopping and learning rate scheduling
         self.lh = LearningHandler(
@@ -172,7 +172,7 @@ class MvSCN:
                     batches_per_epoch=100)[0]
             
              # Logging with W&B
-            run_var.log({"train_loss": losses[i],
+            wandb.log({"loss": losses[i],
             })
 
 

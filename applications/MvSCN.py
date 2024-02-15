@@ -7,7 +7,7 @@ from . import Clustering
 from core import networks
 
 
-def run_net(data_list, config, run, siam_lrs, run_var, save=True):
+def run_net(data_list, config, save=True):
         # Add WandbMetricsLogger to log metrics and WandbModelCheckpoint to log model checkpoints
     # wandb_callbacks = [
     #     WandbMetricsLogger(),
@@ -58,8 +58,8 @@ def run_net(data_list, config, run, siam_lrs, run_var, save=True):
         
         history = siamese_net.train(pairs_train=pairs_train,
                 dist_train=dist_train,
-                lr=siam_lrs[run],
-                # lr=config['siam_lr'], 
+                # lr=siam_lrs[run],
+                lr=config['siam_lr'], 
                 drop=config['siam_drop'], 
                 patience=config['siam_patience'],
                 num_epochs=config['siam_epoch'], 
@@ -91,8 +91,7 @@ def run_net(data_list, config, run, siam_lrs, run_var, save=True):
         lr=config["spectral_lr"], 
         drop=config['spectral_drop'], 
         patience=config['spectral_patience'],
-        num_epochs=config['spectral_epoch'],
-        run_var = run_var)
+        num_epochs=config['spectral_epoch'])
 
     print("Training finished ")
 
