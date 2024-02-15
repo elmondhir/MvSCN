@@ -14,32 +14,24 @@ from core.Config import load_config
 from core.data import get_data
 import wandb
 
+import tensorflow as tf
+
 wandb.login(key="f4ee04bfcae66c9215ab791dd58659c92ff3d87f")
+import functools
+
+sweep_config = {
+    'method': 'random',
+    "metric": {'goal': 'minimize', 'name': 'loss'},
+    'parameters': {
+                'epochs': {'values': [50, 100, 150]},
+                'siam_lrs':{'values': [0.0001, 0.001, 0.01]},
+                'siam_k':{'values': [2,3,4,5,6,7,8,9]},
+                'lamb':{'values': [0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001 , 0.0005, 0.00001]},
+                }
+    }
+    
+sweep_id = wandb.sweep(sweep_config, project="MvSCN-sweep4")
 
 
-# load config for NoisyMNIST 
-config = load_config('./config/noisymnist.yaml')
+wandb.agent(sweep_id, run_net, count=5)
 
-# load config for Caltech101-20
-# config = load_config('./config/Caltech101-20.yaml')
-
-# use pretrained SiameseNet. 
-config['siam_pre_train'] = True
-
-# LOAD DATA
-data_list = get_data(config)
-
-
-siam_lrs= [0.0001, 0.001, 0.01]
-
-
-for i in range(len(siam_lrs)):
-    # RUN EXPERIMENT
-    run = wandb.init(
-    project="MvSCN",
-    name=f"MvSCN-{i}",
-    )
-
-    print(f"MvSCN-{i}")
-    # print(get_run_name("MvSCN", run))
-    x_final_list, scores = run_net(data_list, config, i, siam_lrs, run)

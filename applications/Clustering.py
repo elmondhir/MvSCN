@@ -6,7 +6,7 @@ import numpy as np
 import sklearn.metrics as metrics
 from sklearn.cluster import KMeans
 from munkres import Munkres
-
+import wandb
 
 
 def Clustering(x_list, y):
@@ -85,6 +85,8 @@ def classification_metric(y_true, y_pred, average='macro', verbose = True, decim
     f_score = metrics.f1_score(y_true, y_pred, average=average)
     f_score = np.round(f_score, decimals)
     
+    wandb.log({"accuray": accuracy, "F1-score":f_score})
+
     if verbose:
         # print('Confusion Matrix')
         # print(confusion_matrix)
@@ -107,6 +109,7 @@ def clustering_metric(y_true, y_pred, n_clusters, verbose=True, decimals = 4):
     ari = metrics.adjusted_rand_score(y_true, y_pred)
     ari = np.round(ari, decimals)
     
+    wandb.log({"NMI": nmi, "AMI": ami, "ARI":ari})
     if verbose:
         print('AMI', ami, 'NMI:', nmi, 'ARI:', ari)
     return dict({'AMI': ami, 'NMI': nmi, 'ARI':ari}, **classification_metrics), confusion_matrix

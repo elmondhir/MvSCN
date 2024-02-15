@@ -11,6 +11,7 @@ from keras.models import model_from_json
 
 from core import util
 from core import pairs
+import wandb
 
 def get_data(params):
     '''
@@ -34,6 +35,8 @@ def get_data(params):
         if params['use_code_space']:
             all_data = [x_train, x_test]
             for j, d in enumerate(all_data):
+                print(params['dset'])
+                print(view_name)
                 all_data[j] = embed_data(d, dset=params['dset'] , view_name=view_name)
             x_train, x_test = all_data
 
@@ -44,7 +47,8 @@ def get_data(params):
         ret['siamese'] = {}
         pairs_train, dist_train = pairs.create_pairs_from_unlabeled_data(
             x1=x_train,
-            k=params['siam_k'],
+            # k=params['siam_k'],
+            k=wandb.config.siam_k, # from wandb config
             tot_pairs=params['siamese_tot_pairs'],
         )
         # data for SiameseNet
@@ -100,7 +104,9 @@ def embed_data(x, dset, view_name):
 
     with open(json_path) as f:
         pt_ae = model_from_json(f.read())
+    print(weights_path)
     pt_ae.load_weights(weights_path)
+    print(pt_ae)
     x = x.reshape(-1, np.prod(x.shape[1:]))
 
     get_embeddings = K.function([pt_ae.input],
