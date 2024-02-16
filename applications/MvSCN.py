@@ -16,13 +16,17 @@ def run_net():
     
 
     with wandb.init():
-        configs = load_config('./config/noisymnist.yaml')
+        ## load nus
+        configs = load_config('./config/nus.yaml')
+        
+        ## load noisymnist
+        # configs = load_config('./config/noisymnist.yaml')
 
         # load config for Caltech101-20
-        # config = load_config('./config/Caltech101-20.yaml')
+        # configs = load_config('./config/Caltech101-20.yaml')
 
         # use pretrained SiameseNet. 
-        configs['siam_pre_train'] = True
+        # configs['siam_pre_train'] = True
 
         # LOAD DATA
         data_list = get_data(configs)

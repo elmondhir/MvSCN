@@ -64,8 +64,16 @@ def load_data(params, view):
     if params['dset'] == 'noisymnist':
         data = util.load_data('noisymnist_view'+str(view)+'.gz', 'https://www2.cs.uic.edu/~vnoroozi/noisy-mnist/noisymnist_view'+str(view)+'.gz')
         train_set_x, train_set_y = data[0]
+        train_set_x = train_set_x[:6000]
+        train_set_y =train_set_y[:6000]
+
         valid_set_x, valid_set_y = data[1]
+        valid_set_x = valid_set_x[:1000]
+        valid_set_y = valid_set_y[:1000]
+
         test_set_x, test_set_y = data[2]
+        test_set_x = test_set_x[:1000]
+        test_set_y = test_set_y[:1000]
         train_set_x, train_set_y = np.concatenate((train_set_x, valid_set_x), axis=0), np.concatenate((train_set_y, valid_set_y), axis=0)
     elif params['dset'] == 'Caltech101-20':
         mat = sio.loadmat('./data/'+params['dset']+'.mat')
@@ -73,6 +81,22 @@ def load_data(params, view):
         x = X[view-1]
         x = util.normalize(x)
         y = np.squeeze(mat['Y'])
+
+        # split it into two partitions
+        data_size = x.shape[0]
+        train_index, test_index = util.random_index(data_size, int(data_size*0.5), 1)
+        test_set_x = x[test_index]
+        test_set_y = y[test_index]
+        train_set_x = x[train_index]
+        train_set_y = y[train_index]
+
+    elif params['dset'] == 'nus':
+        mat = sio.loadmat('./data/'+params['dset']+'.mat')
+        X = mat['X'][0]
+        x = X[view-1][:10000]
+        x = util.normalize(x)
+        # y = np.squeeze(mat['Y'])
+        y = np.squeeze(mat['Y'][:10000])
 
         # split it into two partitions
         data_size = x.shape[0]
