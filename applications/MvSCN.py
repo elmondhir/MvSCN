@@ -126,7 +126,7 @@ def run_net():
         # clustering
         y_preds, scores= Clustering.Clustering(x_test_final_list, y_test)
 
-        K.clear_session()
+        # K.clear_session()
 
         return x_test_final_list, scores
 
