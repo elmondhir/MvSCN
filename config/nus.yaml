@@ -40,5 +40,5 @@ spectral_lr: 0.0001               # initial learning rate for spectral net
 spectral_patience: 10             # early stopping patience for spectral net
 spectral_reg: null                # regularization parameter for spectral net
 
-batch_size: 512                   # batch size
-batch_size_orthogonal: 512        # batch size for orthogonal
+batch_size: 256                   # batch size
+batch_size_orthogonal: 256        # batch size for orthogonal
