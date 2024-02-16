@@ -9,23 +9,35 @@ from keras.regularizers import l2
 from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPooling2D, Lambda, Dropout
 from keras import backend as K
 
-def Orthogonal_op(x, epsilon=1e-5): #adjust epsilon so the cholesky decomp work
+def Orthogonal_op(x, epsilon_start=1e-6, epsilon_factor=10, max_attempts=10):
     '''
     Computes a matrix that orthogonalizes the input matrix x
 
-    x:      an n x d input matrix
-    eps:    epsilon to prevent nonzero values in the diagonal entries of x
+    x:            an n x d input matrix
+    epsilon_start: starting value for epsilon
+    epsilon_factor: factor to adjust epsilon in each iteration
+    max_attempts:  maximum number of attempts to find a suitable epsilon
 
-    returns:    a d x d matrix, ortho_weights, which orthogonalizes x by
-                right multiplication
+    returns: a d x d matrix, ortho_weights, which orthogonalizes x by
+             right multiplication
     '''
 
-    x_2 = K.dot(K.transpose(x), x)
-    x_2 += K.eye(K.int_shape(x)[1])*epsilon
-    L = tf.cholesky(x_2)
-    ortho_weights = tf.transpose(tf.matrix_inverse(L)) * tf.sqrt(tf.cast(tf.shape(x)[0], dtype=K.floatx()))
+    epsilon = epsilon_start
+    attempts = 0
 
-    return ortho_weights
+    while attempts < max_attempts:
+        try:
+            x_2 = K.dot(K.transpose(x), x)
+            x_2 += K.eye(K.int_shape(x)[1]) * epsilon
+            L = tf.cholesky(x_2)
+            ortho_weights = tf.transpose(tf.matrix_inverse(L)) * tf.sqrt(tf.cast(tf.shape(x)[0], dtype=K.floatx()))
+            return ortho_weights
+        except tf.errors.InvalidArgumentError:
+            # Cholesky decomposition failed, increase epsilon and try again
+            epsilon *= epsilon_factor
+            attempts += 1
+
+    raise ValueError("Cholesky decomposition failed even after {} attempts. Adjust the input matrix or consider a different approach.".format(max_attempts))
 
 def Orthogonal(x, name=None):
     '''
