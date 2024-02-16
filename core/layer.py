@@ -9,7 +9,7 @@ from keras.regularizers import l2
 from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPooling2D, Lambda, Dropout
 from keras import backend as K
 
-def Orthogonal_op(x, epsilon=1e-4):
+def Orthogonal_op(x, epsilon=1e-3): #adjust epsilon so the cholesky decomp work
     '''
     Computes a matrix that orthogonalizes the input matrix x
 
@@ -22,6 +22,7 @@ def Orthogonal_op(x, epsilon=1e-4):
 
     x_2 = K.dot(K.transpose(x), x)
     x_2 += K.eye(K.int_shape(x)[1])*epsilon
+    x_2 = tf.cast(x_2, dtype=tf.float64)
     L = tf.cholesky(x_2)
     ortho_weights = tf.transpose(tf.matrix_inverse(L)) * tf.sqrt(tf.cast(tf.shape(x)[0], dtype=K.floatx()))
 
