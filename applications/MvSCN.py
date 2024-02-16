@@ -121,12 +121,11 @@ def run_net():
         print('Testing data')
         # get final testing embeddings
         x_test_final_list = mvscn.predict(x_test_list)
+        K.clear_session()
         print('Learned representations for testing (view size, nsamples, dimension)', x_test_final_list.shape)
         
         # clustering
         y_preds, scores= Clustering.Clustering(x_test_final_list, y_test)
-
-        # K.clear_session()
 
         return x_test_final_list, scores
 
