@@ -4,7 +4,7 @@ dset: nus              # dataset
 experiment_id: default            # experiment id (we use current time as the id)
 lamb: 0.001                       # lamb to balance the Loss_spectral and Loss_multi_view
 n_clusters: 31                    # cluster numbe
-view_size: 3                      # view size
+view_size: 5                      # view size
 views:
 use_code_space: false              # enable / disable embedding by AE
 arch:                             # Network architecher for SiameseNet and SpectralNet
